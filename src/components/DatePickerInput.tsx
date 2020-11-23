@@ -37,19 +37,26 @@ const DatePickerInput = ({
      * to keep the `DatePickerTable` and `DatePickerInput` in sync,
      * otherwise do nothing.
      */
-    const newSelectedDate = parse(debouncedValue, dateFormat, new Date());
+    if(debouncedValue.length === dateFormat.length){
+      const newSelectedDate = parse(debouncedValue, dateFormat, new Date());
 
-    if (
-      isEqualDate(newSelectedDate, selectedDate) ||
-      !isValid(newSelectedDate)
-    ) {
+      if (
+        isEqualDate(newSelectedDate, selectedDate) ||
+        !isValid(newSelectedDate)
+      ) {
+        return;
+      }
+
+      dispatch({
+        type: actionTypes.SET_SELECTED_DATE,
+        payload: newSelectedDate
+      });
+
+    }else{
+
       return;
     }
 
-    dispatch({
-      type: actionTypes.SET_SELECTED_DATE,
-      payload: newSelectedDate
-    });
   }, [debouncedValue]);
 
   useUpdateEffect(() => {
