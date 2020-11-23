@@ -74,10 +74,14 @@ const DatePicker = ({
 
   React.useEffect(() => {
     document.addEventListener('click', onClickOutside, true);
-
     return () => {
       document.removeEventListener('click', onClickOutside, true);
     };
+  });
+
+  React.useEffect(() => {
+    window.addEventListener('keyup', onTabOutside);
+    return () => window.removeEventListener('keyup', onTabOutside);
   });
 
   useUpdateEffect(() => {
@@ -92,6 +96,25 @@ const DatePicker = ({
   /*******************************************
    * EVENT HANDLERS
    ******************************************/
+
+  const onTabOutside = (event: Event) => {
+    if (event.key !== 'Tab') {
+      return;
+    }
+
+    const isInput =
+      inputRef &&
+      inputRef.current &&
+      inputRef.current.contains(event.target as Node);
+    const isCalendar =
+      calendarRef &&
+      calendarRef.current &&
+      calendarRef.current.contains(event.target as Node);
+
+    if (event.target && state.showCalendar && !(isInput || isCalendar)) {
+      dispatch({ type: actionTypes.HIDE_CALENDAR });
+    }
+  };
 
   const onClickOutside = (event: Event) => {
     const isInput =
